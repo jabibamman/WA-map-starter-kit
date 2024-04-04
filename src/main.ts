@@ -2,7 +2,8 @@
 
 import { Menu, Popup } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
-import {TypingHandler} from "./utils/TypingHandler";
+import { TypingHandler } from "./utils/TypingHandler";
+import {Message} from "./utils/Message";
 
 console.log("Script started successfully");
 
@@ -14,11 +15,10 @@ WA.onInit()
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
-      let sleepModeIsActive: boolean = false;
-
+    let sleepModeIsActive: boolean = false;
 
     let currentSleepModeButton: Menu | undefined = undefined;
-      const typingHandler = new TypingHandler();
+    const typingHandler = new TypingHandler();
 
     const changeSleepMode = () => {
       console.log("Test boutton !");
@@ -56,7 +56,8 @@ WA.onInit()
           console.log("The local user typed a message", message);
           if (event.author !== undefined) {
               console.log("Message author: ", event.author.name);
-              typingHandler.setupChatListener(WA, sleepModeIsActive);
+              let messageData = new Message(event.author.name, message);
+              typingHandler.respondToMessage(WA, messageData);
           }
       }, { scope: "bubble" });
 
