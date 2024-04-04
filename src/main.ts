@@ -18,8 +18,6 @@ WA.onInit().then(() => {
     WA.room.area.onEnter('clock').subscribe(() => {
         const today = new Date();
         const time = today.getHours() + ":" + today.getMinutes();
-        console.log('Before showing clock and playing message');
-        playAudioFile(WA.player.name)
         currentPopup = WA.ui.openPopup("clockPopup", "It's " + time, []);
     })
     WA.room.area.onLeave('clock').subscribe(closePopup)
@@ -28,7 +26,10 @@ WA.onInit().then(() => {
         console.log('enter to meeting room');
         playAudioFile(WA.player.name)
     })
+    console.log('Exit meeting room');
     WA.room.area.onLeave('jitsiMeetingRoom').subscribe(stopAudioFile);
+
+
 
     // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
     bootstrapExtra().then(() => {
