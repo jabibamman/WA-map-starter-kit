@@ -29,9 +29,9 @@ export class TypingHandler {
 
         setTimeout(async () => {
             WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
-            //let response = await this.generateMessage.respondTo(this.messagesToRespond);
-            let response = "Salut, je suis en train de travailler, je te réponds dès que possible.";
+            let response = await this.generateMessage.respondTo(this.messagesToRespond);
             let typingSpeed = this.getResponseTime(response);
+            console.log(response);
             console.log("time to type the message", typingSpeed);
 
             setTimeout(() => {
