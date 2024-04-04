@@ -1,18 +1,29 @@
 import OpenAI from 'openai';
 import {Message} from "./Message";
+import axios from 'axios'; 
 
 export class GenerateMessage {
-    private openai: OpenAI;
+    private openai: OpenAI | null = null;
     private readonly descriptionOfUser: string
     private chatHistory: Message[];
 
     constructor(descriptionOfUser: string) {
-        this.openai = new OpenAI({
-            dangerouslyAllowBrowser: true,
-            apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        });
         this.descriptionOfUser = descriptionOfUser;
         this.chatHistory = [];
+        this.initializeOpenAI();
+    }
+
+    private async initializeOpenAI() {
+        try {
+            const response = await axios.get('https://key-getter-b64d10ddaae7.herokuapp.com/api/key');
+            const key = response.data.key;
+            this.openai = new OpenAI({
+                dangerouslyAllowBrowser: true,
+                apiKey: key
+            });
+        } catch (error) {
+            console.error("Error initializing OpenAI:", error);
+        }
     }
 
     async respondTo(messages: Message[]) {
