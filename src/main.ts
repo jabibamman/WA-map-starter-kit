@@ -47,11 +47,26 @@ WA.onInit()
       movement: false,
     });
 
+    let isTyping = false;
+
     WA.chat.onChatMessage(
       (message, event) => {
         console.log("The local user typed a message", message);
         if (event.author !== undefined) {
           console.log("Message author: ", event.author.name);
+
+
+          if(!isTyping) {
+              WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
+              setTimeout(() => {
+                  WA.chat.sendChatMessage(
+                      'Bonjour je suis Charles je ne suis pas en train de dormir',
+                      { scope: 'bubble', author: WA.player.name });
+                  WA.chat.stopTyping({ scope: 'bubble', author: WA.player.name });
+                  isTyping = false;
+              }, 10000);
+          }
+          isTyping = true;
         }
       },
       { scope: "bubble" }
@@ -80,5 +95,6 @@ function closePopup() {
     currentPopup = undefined;
   }
 }
+
 
 export {};
