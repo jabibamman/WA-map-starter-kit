@@ -41,7 +41,6 @@ export class TypingHandler {
                 return;
             }
 
-
             let typingSpeed = this.getResponseTime(response);
             console.log(response);
             console.log("time to type the message", typingSpeed);
@@ -58,7 +57,7 @@ export class TypingHandler {
     }
 
     private getResponseTime(message: string): number {
-        const millisecondPerWord = (60 / (40 + Math.floor(Math.random() * (121 - 40)))) * 1000;
-        return message.split(' ').length * message.length / 4.8 * millisecondPerWord;
+        const millisecondPerWord = (((Math.floor(Math.random() * 80)) + 50) / 60) * 1000;
+        return (message.length) * (millisecondPerWord / 4.8);
     }
 }
