@@ -1,7 +1,6 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
 import { Menu, Popup } from "@workadventure/iframe-api-typings";
-import { MenuOptions } from "@workadventure/iframe-api-typings/front/Api/Iframe/ui";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 
 console.log("Script started successfully");
@@ -10,7 +9,7 @@ let currentPopup: Popup | undefined = undefined;
 
 // Waiting for the API to be ready
 WA.onInit()
-  .then(() => {
+  .then(async () => {
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
@@ -41,6 +40,21 @@ WA.onInit()
           changeSleepMode();
         },
       }
+    );
+
+    await WA.players.configureTracking({
+      players: true,
+      movement: false,
+    });
+
+    WA.chat.onChatMessage(
+      (message, event) => {
+        console.log("The local user typed a message", message);
+        if (event.author !== undefined) {
+          console.log("Message author: ", event.author.name);
+        }
+      },
+      { scope: "bubble" }
     );
 
     WA.room.area.onEnter("clock").subscribe(() => {
