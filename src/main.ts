@@ -56,6 +56,21 @@ WA.onInit()
             }
         );
 
+        let moveTimeout: NodeJS.Timeout | null = null;
+
+        WA.player.onPlayerMove(() => {
+            if (moveTimeout !== null) {
+                clearTimeout(moveTimeout);
+            }
+        
+            moveTimeout = setTimeout(() => {
+                sendPosition();
+            }, 500); // Attendre 500 ms après le dernier mouvement du joueur pour envoyer la position
+        });
+        
+
+        
+
         WA.room.area.onEnter("clock").subscribe(() => {
             const today = new Date();
             const time = today.getHours() + ":" + today.getMinutes();
@@ -111,6 +126,15 @@ function clokMov(arrayClock: string | any[]) {
 }
 
 
+function sendPosition() {
+    WA.player.getPosition().then(position => {
+        console.log("====================================");
+        console.log("Position envoyée");
+        console.log("x: " + position.x + ", y: " + position.y);
+        console.log("====================================");
+        window.parent.postMessage({ position: position }, '*');
+    });
+}
 
 
 export {};

@@ -4,33 +4,37 @@
     <title>Ma page</title>
 </head>
 <body>
+
     <h1>Choisissez une heure</h1>
     <form>
-        <label for="date">Heure :</label>
+        <label id="currentPos"> Position: </label><br><br>
+        <label for="date">Heure : </label>
         <input type="time" id="Heure" name="date">
         <input type="submit" value="Envoyer">
     </form>
 
-    <script> 
-
-      
-
+    <script>
+        window.addEventListener('message', function(event) {
+            var position = event.data.position;
+            console.log('Position reçue : ', position);
+        });
+    
         document.addEventListener('click', function(event) {
             var x = event.clientX;
             var y = event.clientY;
             console.log('Clic à la position (' + x + ', ' + y + ')');
         });
-
-
-        let positionList = []; 
+    
+        let positionList = [];
         function makeList() {
             for(var i = 0; i < 24; i++) {
                 positionList.push(i);
                 console.log(positionList);
             }
-
+    
             console.log(positionList);
         }
+    </script>
     
     </script>
 </body>
