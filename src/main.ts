@@ -28,24 +28,13 @@ WA.onInit()
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
         currentSleepModeButton = WA.ui.registerMenuCommand(
-          sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
-          {
-            callback: () => {
-              changeSleepMode();
-            },
-          }
+            sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+            {
+                callback: () => {
+                    changeSleepMode();
+                },
+            }
         );
-      }
-    };
-
-    currentSleepModeButton = WA.ui.registerMenuCommand(
-      sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
-      {
-        callback: () => {
-          changeSleepMode();
-        },
-      }
-    );
 
     await WA.players.configureTracking({
       players: true,
@@ -67,22 +56,22 @@ WA.onInit()
       currentPopup = WA.ui.openPopup("clockPopup", "Ronan " + time, []);
     });
 
-    WA.room.area.onLeave("clock").subscribe(closePopup);
+        WA.room.area.onLeave("clock").subscribe(closePopup);
 
-    // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
-    bootstrapExtra()
-      .then(() => {
-        console.log("Scripting API Extra ready");
-      })
-      .catch((e) => console.error(e));
-  })
-  .catch((e) => console.error(e));
+        // The line below bootstraps the Scripting API Extra library that adds a number of advanced properties/features to WorkAdventure
+        bootstrapExtra()
+            .then(() => {
+                console.log("Scripting API Extra ready");
+            })
+            .catch((e) => console.error(e));
+    })
+    .catch((e) => console.error(e));
 
 function closePopup() {
-  if (currentPopup !== undefined) {
-    currentPopup.close();
-    currentPopup = undefined;
-  }
+    if (currentPopup !== undefined) {
+        currentPopup.close();
+        currentPopup = undefined;
+    }
 }
 
 
