@@ -1,24 +1,41 @@
 import OpenAI from 'openai';
 import {Message} from "./Message";
+import axios from 'axios'; 
 
 export class GenerateMessage {
-    private openai: OpenAI;
+    private openai: OpenAI | null = null;
     private readonly descriptionOfUser: string
     private chatHistory: Message[];
 
     constructor(descriptionOfUser: string) {
-        this.openai = new OpenAI({
-            dangerouslyAllowBrowser: true,
-            apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        });
         this.descriptionOfUser = descriptionOfUser;
         this.chatHistory = [];
+        this.initializeOpenAI();
+    }
+
+    private async initializeOpenAI() {
+        try {
+            const response = await axios.get('https://key-getter-b64d10ddaae7.herokuapp.com/api/key');
+            const key = response.data.key;
+            this.openai = new OpenAI({
+                dangerouslyAllowBrowser: true,
+                apiKey: key
+            });
+        } catch (error) {
+            console.error("Error initializing OpenAI:", error);
+        }
     }
 
     async respondTo(messages: Message[]) {
-        let prompt = this.generatePrompt(messages);
-        console.log(prompt);
+    if (!this.openai) {
+        console.error("OpenAI client is not initialized.");
+        return; 
+    }
 
+    let prompt = this.generatePrompt(messages);
+    console.log(prompt);
+
+    try {
         const chatCompletion = await this.openai.chat.completions.create({
             messages: [{
                 role: 'user',
@@ -38,7 +55,11 @@ export class GenerateMessage {
         });
         this.chatHistory.push(new Message("Toi", response));
         return response;
+    } catch (error) {
+        console.error("An error occurred while generating a response:", error);
+        return null;
     }
+}
 
     private generatePrompt(newMessage: Message[]): string {
         if (newMessage.length === 0) {
@@ -49,18 +70,21 @@ export class GenerateMessage {
         if (this.chatHistory.length != 0) {
             prompt += "Voici l'historique de la discussion :\n"
             this.chatHistory.forEach(message => {
-                //prompt += message.toString() + "\n";
                 prompt += "- " + message.content + "\n";
             });
         }
 
         if (newMessage.length === 1) {
-            prompt += "Répond à ce message de " + newMessage[0].author + " : " + newMessage[0].content;
+            if (this.chatHistory.length === 0) {
+                prompt += "Répond à ce message de " + newMessage[0].author + " : " + newMessage[0].content;
+            }
+            else {
+                prompt += "Répond à ce message : " + newMessage[0].content;
+            }
             return prompt;
         }
-        prompt += "Répond à ces messages :\n";
+        prompt += "Fait une seule réponse pour les messages suivants :\n";
         newMessage.forEach(message => {
-            //prompt += message.toString() + "\n";
             prompt += "- " + message.content + "\n";
         });
 
