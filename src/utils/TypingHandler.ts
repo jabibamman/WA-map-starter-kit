@@ -58,6 +58,6 @@ export class TypingHandler {
 
     private getResponseTime(message: string): number {
         const millisecondPerWord = (((Math.floor(Math.random() * 80)) + 50) / 60) * 1000;
-        return (message.length) * (millisecondPerWord / 4.8);
+        return message.length * (millisecondPerWord / 4.8);
     }
 }
