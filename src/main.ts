@@ -2,6 +2,7 @@
 
 import { Menu, Popup } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
+import {randomInt} from "node:crypto";
 
 console.log("Script started successfully");
 
@@ -55,16 +56,20 @@ WA.onInit()
         if (event.author !== undefined) {
           console.log("Message author: ", event.author.name);
 
-
           if(!isTyping) {
-              WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
+              console.log("oui");
+              let randomTime = Math.floor(Math.random() * 15000) + 1000;
+              console.log("randomTime", randomTime);
               setTimeout(() => {
-                  WA.chat.sendChatMessage(
-                      'Bonjour je suis Charles je ne suis pas en train de dormir',
-                      { scope: 'bubble', author: WA.player.name });
-                  WA.chat.stopTyping({ scope: 'bubble', author: WA.player.name });
-                  isTyping = false;
-              }, 10000);
+                  WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
+                  setTimeout(() => {
+                      WA.chat.sendChatMessage(
+                          'Bonjour je suis Charles je ne suis pas en train de dormir',
+                          { scope: 'bubble', author: WA.player.name });
+                      WA.chat.stopTyping({ scope: 'bubble', author: WA.player.name });
+                      isTyping = false;
+                  }, 3000);
+              }, randomTime);
           }
           isTyping = true;
         }
