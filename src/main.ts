@@ -2,7 +2,6 @@
 
 import {Menu, Popup} from "@workadventure/iframe-api-typings";
 import {bootstrapExtra} from "@workadventure/scripting-api-extra";
-import test from "node:test";
 
 console.log("Script started successfully");
 
@@ -13,6 +12,8 @@ WA.onInit()
     .then(() => {
         console.log("Scripting API ready");
         console.log("Player tags: ", WA.player.tags);
+
+        WA.nav.openCoWebSite("/time2chill.html");
 
         
         const arrayClock = [['13:16', 100, 100], ['13:17', 400, 400]];

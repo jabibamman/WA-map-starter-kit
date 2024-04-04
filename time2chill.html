@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ma page</title>
+</head>
+<body>
+    <h1>Choisissez une heure</h1>
+    <form>
+        <label for="date">Heure :</label>
+        <input type="time" id="Heure" name="date">
+        <input type="submit" value="Envoyer">
+    </form>
+
+    <script> 
+
+      
+
+        document.addEventListener('click', function(event) {
+            var x = event.clientX;
+            var y = event.clientY;
+            console.log('Clic à la position (' + x + ', ' + y + ')');
+        });
+
+
+        let positionList = []; 
+        function makeList() {
+            for(var i = 0; i < 24; i++) {
+                positionList.push(i);
+                console.log(positionList);
+            }
+
+            console.log(positionList);
+        }
+    
+    </script>
+</body>
+</html>
