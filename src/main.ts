@@ -2,7 +2,7 @@
 
 import { Menu, Popup } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
-import {randomInt} from "node:crypto";
+import {TypingHandler} from "./utils/TypingHandler";
 
 console.log("Script started successfully");
 
@@ -14,13 +14,17 @@ WA.onInit()
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
-    let sleepModeIsActive = false;
+      let sleepModeIsActive: boolean = false;
+
 
     let currentSleepModeButton: Menu | undefined = undefined;
+      const typingHandler = new TypingHandler();
 
     const changeSleepMode = () => {
       console.log("Test boutton !");
       sleepModeIsActive = !sleepModeIsActive;
+      typingHandler.isSleepModeActive = sleepModeIsActive;
+
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
         currentSleepModeButton = WA.ui.registerMenuCommand(
@@ -48,34 +52,13 @@ WA.onInit()
       movement: false,
     });
 
-    let isTyping = false;
-
-    WA.chat.onChatMessage(
-      (message, event) => {
-        console.log("The local user typed a message", message);
-        if (event.author !== undefined) {
-          console.log("Message author: ", event.author.name);
-
-          if(!isTyping) {
-              console.log("oui");
-              let randomTime = Math.floor(Math.random() * 15000) + 1000;
-              console.log("randomTime", randomTime);
-              setTimeout(() => {
-                  WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
-                  setTimeout(() => {
-                      WA.chat.sendChatMessage(
-                          'Bonjour je suis Charles je ne suis pas en train de dormir',
-                          { scope: 'bubble', author: WA.player.name });
-                      WA.chat.stopTyping({ scope: 'bubble', author: WA.player.name });
-                      isTyping = false;
-                  }, 3000);
-              }, randomTime);
+      WA.chat.onChatMessage((message: string, event: any) => {
+          console.log("The local user typed a message", message);
+          if (event.author !== undefined) {
+              console.log("Message author: ", event.author.name);
+              typingHandler.setupChatListener(WA, sleepModeIsActive);
           }
-          isTyping = true;
-        }
-      },
-      { scope: "bubble" }
-    );
+      }, { scope: "bubble" });
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
@@ -100,6 +83,9 @@ function closePopup() {
     currentPopup = undefined;
   }
 }
+
+
+
 
 
 export {};
