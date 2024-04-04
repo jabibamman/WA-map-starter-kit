@@ -49,18 +49,21 @@ export class GenerateMessage {
         if (this.chatHistory.length != 0) {
             prompt += "Voici l'historique de la discussion :\n"
             this.chatHistory.forEach(message => {
-                //prompt += message.toString() + "\n";
                 prompt += "- " + message.content + "\n";
             });
         }
 
         if (newMessage.length === 1) {
-            prompt += "Répond à ce message de " + newMessage[0].author + " : " + newMessage[0].content;
+            if (this.chatHistory.length === 0) {
+                prompt += "Répond à ce message de " + newMessage[0].author + " : " + newMessage[0].content;
+            }
+            else {
+                prompt += "Répond à ce message : " + newMessage[0].content;
+            }
             return prompt;
         }
-        prompt += "Répond à ces messages :\n";
+        prompt += "Fait une seule réponse pour les messages suivants :\n";
         newMessage.forEach(message => {
-            //prompt += message.toString() + "\n";
             prompt += "- " + message.content + "\n";
         });
 

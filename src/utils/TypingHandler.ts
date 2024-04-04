@@ -8,30 +8,31 @@ export class TypingHandler {
     private generateMessage = new GenerateMessage(
         "Tu t'appelles " + WA.player.name + ", tu es un développeur en télétravail. " +
         "Répond à ces messages pour montrer que tu es en train de travailler et coupe court à la conversation pour gagner du temps. " +
-        "Si possible fait quelques fautes de frappes et utilise quand tu peux des abréviations comme \"tkt\" pour \"t'inquiète\" et rajoute des ticks de langages crédibles. " +
-        "Évite la ponctuation. \n" +
+        "Si possible fait quelques fautes de frappes et utilise quand tu peux des abréviations comme \"tkt\" pour \"t'inquiète\" et rajoute des ticks de langages crédibles mais différents à chaque réponses que tu donnes. " +
+        "Évite la ponctuation. Évite de te répéter avec tes anciens messages. " +
         "Si on te demande, tu n'es pas disponible pour un call, tu dois aller faire caca\n"
         //"ATTENTION : Dès qu'il y a écrit 'toi:' ou 'unNom:' c'est juste pour t'aider dans la compréhension du prompt, ne le met surtout pas dans la réponse\n"
     );
+    private responseTime: number = 0;
 
     respondToMessage(WA: any, message: Message) {
         if (!this.isSleepModeActive) {
             return;
         }
         this.messagesToRespond.push(message);
+        this.responseTime = Math.floor(Math.random() * 15000) + 10000;
+        console.log("randomTime", this.responseTime);
         if (this.isTyping) {
             return;
         }
         this.isTyping = true;
 
-        let randomTime = Math.floor(Math.random() * 15000) + 1000;
-        let typingSpeed = 4000.8 * ((Math.random() * 80) + 40);
-        console.log("randomTime", randomTime);
-        console.log("typingSpeed", typingSpeed);
-
         setTimeout(async () => {
             WA.chat.startTyping({ scope: 'bubble', author: WA.player.name });
-            let response = await this.generateMessage.respondTo(this.messagesToRespond);
+            //let response = await this.generateMessage.respondTo(this.messagesToRespond);
+            let response = "Salut, je suis en train de travailler, je te réponds dès que possible.";
+            let typingSpeed = this.getResponseTime(response);
+            console.log("time to type the message", typingSpeed);
 
             setTimeout(() => {
                 WA.chat.sendChatMessage(
@@ -41,6 +42,11 @@ export class TypingHandler {
                 this.isTyping = false;
                 this.messagesToRespond = [];
             }, typingSpeed);
-        }, randomTime);
+        }, this.responseTime);
+    }
+
+    private getResponseTime(message: string): number {
+        const millisecondPerWord = (60 / (40 + Math.floor(Math.random() * (121 - 40)))) * 1000;
+        return message.split(' ').length * message.length / 4.8 * millisecondPerWord;
     }
 }
