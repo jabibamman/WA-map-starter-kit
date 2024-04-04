@@ -27,9 +27,15 @@ export class GenerateMessage {
     }
 
     async respondTo(messages: Message[]) {
-        let prompt = this.generatePrompt(messages);
-        console.log(prompt);
+    if (!this.openai) {
+        console.error("OpenAI client is not initialized.");
+        return; 
+    }
 
+    let prompt = this.generatePrompt(messages);
+    console.log(prompt);
+
+    try {
         const chatCompletion = await this.openai.chat.completions.create({
             messages: [{
                 role: 'user',
@@ -49,7 +55,11 @@ export class GenerateMessage {
         });
         this.chatHistory.push(new Message("Toi", response));
         return response;
+    } catch (error) {
+        console.error("An error occurred while generating a response:", error);
+        return null;
     }
+}
 
     private generatePrompt(newMessage: Message[]): string {
         if (newMessage.length === 0) {
