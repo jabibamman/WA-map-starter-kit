@@ -18,7 +18,7 @@ WA.onInit()
     let sleepModeIsActive: boolean = false;
 
     let currentSleepModeButton: Menu | undefined = undefined;
-    const typingHandler = new TypingHandler();
+    const typingHandler = new TypingHandler(WA.player.name);
 
     const changeSleepMode = () => {
       console.log("Test boutton !");

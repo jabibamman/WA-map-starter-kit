@@ -2,18 +2,19 @@ import {GenerateMessage} from "./GenerateMessage";
 import {Message} from "./Message";
 
 export class TypingHandler {
-    private isTyping: boolean = false;
-    public isSleepModeActive: boolean = false;
-    private messagesToRespond: Message[] = [];
-    private generateMessage = new GenerateMessage(
-        "Tu t'appelles " + WA.player.name + ", tu es un développeur en télétravail. " +
-        "Répond à ces messages pour montrer que tu es en train de travailler et coupe court à la conversation pour gagner du temps. " +
-        "Si possible fait quelques fautes de frappes et utilise quand tu peux des abréviations comme \"tkt\" pour \"t'inquiète\" et rajoute des ticks de langages crédibles mais différents à chaque réponses que tu donnes. " +
-        "Évite la ponctuation. Évite de te répéter avec tes anciens messages. " +
-        "Si on te demande, tu n'es pas disponible pour un call, tu dois aller faire caca\n"
-        //"ATTENTION : Dès qu'il y a écrit 'toi:' ou 'unNom:' c'est juste pour t'aider dans la compréhension du prompt, ne le met surtout pas dans la réponse\n"
-    );
-    private responseTime: number = 0;
+    private isTyping: boolean;
+    public isSleepModeActive: boolean;
+    private messagesToRespond: Message[];
+    private generateMessage: GenerateMessage;
+    private responseTime: number;
+
+    constructor(playerName: string) {
+        this.isTyping = false;
+        this.isSleepModeActive = false;
+        this.messagesToRespond = [];
+        this.generateMessage = new GenerateMessage(playerName);
+        this.responseTime = 0;
+    }
 
     respondToMessage(WA: any, message: Message) {
         if (!this.isSleepModeActive) {
@@ -57,7 +58,7 @@ export class TypingHandler {
     }
 
     private getResponseTime(message: string): number {
-        const millisecondPerWord = (((Math.floor(Math.random() * 80)) + 50) / 60) * 1000;
+        const millisecondPerWord = (((Math.floor(Math.random() * 80)) + 80) / 60) * 1000;
         return message.length * (millisecondPerWord / 4.8);
     }
 }
