@@ -15,19 +15,25 @@ WA.onInit()
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
-    let sleepModeIsActive: boolean = false;
+    await WA.players.configureTracking({
+        players: true,
+        movement: false,
+    });
+
+    WA.player.state.isSleepModeActive = false;
+    console.log("Sleep mode: ", WA.player.state.isSleepModeActive);
 
     let currentSleepModeButton: Menu | undefined = undefined;
     const typingHandler = new TypingHandler(WA.player.name);
 
     const changeSleepMode = () => {
-      sleepModeIsActive = !sleepModeIsActive;
-      typingHandler.isSleepModeActive = sleepModeIsActive;
+    console.log("Test button !");
+    WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
         currentSleepModeButton = WA.ui.registerMenuCommand(
-          sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+            WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
           {
             callback: () => {
               changeSleepMode();
@@ -38,7 +44,7 @@ WA.onInit()
     };
 
     currentSleepModeButton = WA.ui.registerMenuCommand(
-      sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+        WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
       {
         callback: () => {
           // Fonctions à rajouter lorsque monsieur ne veut pas travailler
@@ -49,11 +55,6 @@ WA.onInit()
         },
       }
     );
-
-    await WA.players.configureTracking({
-      players: true,
-      movement: false,
-    });
 
     WA.chat.onChatMessage((message: string, event: any) => {
         console.log("The local user typed a message", message);

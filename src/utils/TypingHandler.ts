@@ -3,21 +3,19 @@ import {Message} from "./Message";
 
 export class TypingHandler {
     private isTyping: boolean;
-    public isSleepModeActive: boolean;
     private messagesToRespond: Message[];
     private generateMessage: GenerateMessage;
     private responseTime: number;
 
     constructor(playerName: string) {
         this.isTyping = false;
-        this.isSleepModeActive = false;
         this.messagesToRespond = [];
         this.generateMessage = new GenerateMessage(playerName);
         this.responseTime = 0;
     }
 
     respondToMessage(WA: any, message: Message) {
-        if (!this.isSleepModeActive) {
+        if (!WA.player.state.isSleepModeActive) {
             return;
         }
         this.messagesToRespond.push(message);
