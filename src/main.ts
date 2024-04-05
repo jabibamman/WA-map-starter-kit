@@ -21,7 +21,6 @@ WA.onInit()
     const typingHandler = new TypingHandler(WA.player.name);
 
     const changeSleepMode = () => {
-      console.log("Test boutton !");
       sleepModeIsActive = !sleepModeIsActive;
       typingHandler.isSleepModeActive = sleepModeIsActive;
 
