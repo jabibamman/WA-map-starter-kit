@@ -15,7 +15,7 @@ WA.onInit()
   .then(async () => {
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
-    
+
     const audioPlay = new AudioFile();
 
     await WA.players.configureTracking({
@@ -76,7 +76,7 @@ WA.onInit()
         },
       }
     );
-    
+
     WA.player.proximityMeeting.onJoin().subscribe(async (players: RemotePlayerInterface[]) => {
         console.log('Player joined :' + players);
         console.log('Player joined :' + WA.player.name);
