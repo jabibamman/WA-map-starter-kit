@@ -13,12 +13,6 @@ WA.onInit()
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
-    const arrayClock = [
-      ["13:16", 100, 100],
-      ["13:17", 400, 400],
-    ];
-    //clokMov(arrayClock);
-
     ondblclick;
     let sleepModeIsActive = false;
 
@@ -75,28 +69,6 @@ function closePopup() {
     currentPopup.close();
     currentPopup = undefined;
   }
-}
-
-function movMap(x: number, y: number) {
-  WA.player.moveTo(x, y);
-}
-
-function refresh(arrayClock: string | any[]) {
-  var t = 60000; // rafraîchissement en millisecondes
-  setTimeout(clokMov, t, arrayClock); // Passer la référence de la fonction directement
-}
-
-function clokMov(arrayClock: string | any[]) {
-  const todayClock = new Date();
-  const timeClock = todayClock.getHours() + ":" + todayClock.getMinutes();
-
-  for (let i = 0; i < arrayClock.length; i++) {
-    if (timeClock == arrayClock[i][0]) {
-      movMap(arrayClock[i][1], arrayClock[i][2]);
-    }
-  }
-
-  refresh(arrayClock);
 }
 
 export {};

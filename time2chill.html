@@ -59,7 +59,6 @@
 
       //////////////////////////////////////////////// ButtonAction ////////////////////////////////////////////////////
       function insertDate() {
-        console.log("the button has been clicked");
         var inputValueDate = document.getElementById("time").value;
         if (!inputValueDate) {
           alert("Erreur : aucune heure n'a été entrée.");
@@ -96,7 +95,6 @@
           "Position " + moves.length + ", Time: " + inputValueDate;
         moveList.appendChild(listItem);
 
-        console.log(moves); // TODO: remove
         clokMov(moves);
       }
 
@@ -111,9 +109,6 @@
 
       //////////////////////////////////////////////// clockMovePlayer ////////////////////////////////////////////////////
       function clokMov(arrayClock) {
-        console.log("MOV Clock par minute play ");
-        console.log(arrayClock[0][0]);
-
         const todayClock = new Date();
 
         // Construire la chaîne de l'heure avec des zéros ajoutés si nécessaire
@@ -122,18 +117,8 @@
           ":" +
           addZero(todayClock.getMinutes());
 
-        console.log(timeClock);
-
         for (let i = 0; i < arrayClock.length; i++) {
           if (timeClock == arrayClock[i][0]) {
-            console.log(
-              "Ta positon pour " +
-                arrayClock[i][0] +
-                " : " +
-                arrayClock[i][1] +
-                "," +
-                arrayClock[i][2]
-            );
             movMap(arrayClock[i][1], arrayClock[i][2]);
           }
         }
