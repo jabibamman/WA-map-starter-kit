@@ -1,11 +1,12 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-import { CoWebsite, Menu, Popup } from "@workadventure/iframe-api-typings";
+import { CoWebsite, Menu, Popup, RemotePlayerInterface } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 import { TypingHandler } from "./utils/TypingHandler";
 import { Message } from "./utils/Message";
+import {AudioFile} from "./utils/audioFile";
 
-console.log("Script started successfully");
+console.log('Script started successfully');
 
 let currentPopup: Popup | undefined = undefined;
 
@@ -14,6 +15,8 @@ WA.onInit()
   .then(async () => {
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
+    
+    const audioPlay = new AudioFile();
 
     await WA.players.configureTracking({
       players: true,
@@ -31,6 +34,7 @@ WA.onInit()
 
     const changeSleepMode = async () => {
       WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
+      audioPlay.isSleepModeActive = WA.player.state.isSleepModeActive as boolean;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
@@ -72,6 +76,12 @@ WA.onInit()
         },
       }
     );
+    
+    WA.player.proximityMeeting.onJoin().subscribe(async (players: RemotePlayerInterface[]) => {
+        console.log('Player joined :' + players);
+        console.log('Player joined :' + WA.player.name);
+        audioPlay.playAudioFile(WA,WA.player.name);
+    });
 
     WA.chat.onChatMessage(
       (message: string, event: any) => {
@@ -106,11 +116,12 @@ WA.onInit()
   .catch((e) => console.error(e));
 
 function closePopup() {
-  if (currentPopup !== undefined) {
-    currentPopup.close();
-    currentPopup = undefined;
-  }
+    if (currentPopup !== undefined) {
+        currentPopup.close();
+        currentPopup = undefined;
+    }
 }
+
 
 function getSleepModeMenuName(WA: any) {
     return WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir";
