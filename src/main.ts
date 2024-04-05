@@ -55,7 +55,7 @@ WA.onInit()
         callback: () => {
           // Fonctions à rajouter lorsque monsieur ne veut pas travailler
           // Bouger en fonction d'un horraire
-          WA.nav.openCoWebSite("/time2chill.html", true);
+          WA.nav.openCoWebSite("WA-map-starter-kit/time2chill.html", true);
 
           changeSleepMode();
         },
