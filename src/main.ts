@@ -36,12 +36,12 @@ WA.onInit()
         currentSleepModeButton.remove();
         if (automaticMovementButton) automaticMovementButton.remove();
         if (WA.player.state.isSleepModeActive) {
-          coWebsite = await WA.nav.openCoWebSite("/WA-map-starter-kit/sleepMode.html");
+          coWebsite = await WA.nav.openCoWebSite(`${import.meta.env.BASE_URL}sleepMode.html`);
           automaticMovementButton = WA.ui.registerMenuCommand(
             "Mouvement Automatique",
             {
               callback: () => {
-                automaticMovementWebSite = WA.nav.openCoWebSite("/WA-map-starter-kit/time2chill.html", true);
+                automaticMovementWebSite = WA.nav.openCoWebSite(`${import.meta.env.BASE_URL}time2chill.html`, true);
               },
             }
           );
@@ -67,7 +67,7 @@ WA.onInit()
         callback: () => {
           // Fonctions à rajouter lorsque monsieur ne veut pas travailler
           // Bouger en fonction d'un horraire
-          WA.nav.openCoWebSite("/WA-map-starter-kit/time2chill.html", true);
+          WA.nav.openCoWebSite(`${import.meta.env.BASE_URL}time2chill.html`, true);
           changeSleepMode();
         },
       }
