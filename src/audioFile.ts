@@ -1,11 +1,12 @@
-import fs from 'fs';
 import {Sound} from "@workadventure/iframe-api-typings";
 
 export class AudioFile {
 
 }
 
+// @ts-ignore
 let playerName = '';
+// @ts-ignore
 let playOrStop = false;
 
 // interface AudioConfig {
