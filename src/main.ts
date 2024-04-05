@@ -15,15 +15,21 @@ WA.onInit()
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
 
-    let sleepModeIsActive: boolean = false;
+    await WA.players.configureTracking({
+        players: true,
+        movement: false,
+    });
+
+    WA.player.state.isSleepModeActive = false;
+    console.log("Sleep mode: ", WA.player.state.isSleepModeActive);
 
     let currentSleepModeButton: Menu | undefined = undefined;
     let coWebsite: CoWebsite | undefined = undefined;
-    const typingHandler = new TypingHandler();
+    const typingHandler = new TypingHandler(WA.player.name);
 
-    const changeSleepMode = async () => {
-      sleepModeIsActive = !sleepModeIsActive;
-      typingHandler.isSleepModeActive = sleepModeIsActive;
+    const changeSleepMode = () => {
+    console.log("Test button !");
+    WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
@@ -33,7 +39,7 @@ WA.onInit()
           if (coWebsite) coWebsite.close();
         }
         currentSleepModeButton = WA.ui.registerMenuCommand(
-          sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+            WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
           {
             callback: () => {
               changeSleepMode();
@@ -44,35 +50,34 @@ WA.onInit()
     };
 
     currentSleepModeButton = WA.ui.registerMenuCommand(
-      sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir !",
+        WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
       {
         callback: () => {
+          // Fonctions à rajouter lorsque monsieur ne veut pas travailler
+          // Bouger en fonction d'un horraire
+          WA.nav.openCoWebSite("/time2chill.html", true);
+
           changeSleepMode();
         },
       }
     );
 
-    await WA.players.configureTracking({
-      players: true,
-      movement: false,
-    });
-
-    WA.chat.onChatMessage(
-      (message: string, event: any) => {
+    WA.chat.onChatMessage((message: string, event: any) => {
         console.log("The local user typed a message", message);
         if (event.author !== undefined) {
-          console.log("Message author: ", event.author.name);
-          let messageData = new Message(event.author.name, message);
-          typingHandler.respondToMessage(WA, messageData);
+            console.log("Message author: ", event.author.name);
+            let messageData = new Message(event.author.name, message);
+            typingHandler.respondToMessage(WA, messageData);
         }
-      },
-      { scope: "bubble" }
-    );
+    }, { scope: "bubble" });
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
-      const time = today.getHours() + ":" + today.getMinutes();
-      currentPopup = WA.ui.openPopup("clockPopup", "Ronan " + time, []);
+      // set hours/minutes with 0 if < 10
+      const hours = today.getHours().toString().padStart(2, "0");
+      const minutes = today.getMinutes().toString().padStart(2, "0");
+      const time = hours + ":" + minutes;
+      currentPopup = WA.ui.openPopup("clockPopup", time, []);
     });
 
     WA.room.area.onLeave("clock").subscribe(closePopup);
