@@ -27,8 +27,8 @@ WA.onInit()
     const typingHandler = new TypingHandler(WA.player.name);
 
     const changeSleepMode = () => {
-      console.log("Test button !");
-      WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
+    console.log("Test button !");
+    WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
@@ -47,6 +47,10 @@ WA.onInit()
         WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
       {
         callback: () => {
+          // Fonctions à rajouter lorsque monsieur ne veut pas travailler
+          // Bouger en fonction d'un horraire
+          WA.nav.openCoWebSite("/time2chill.html", true);
+
           changeSleepMode();
         },
       }
@@ -87,9 +91,5 @@ function closePopup() {
     currentPopup = undefined;
   }
 }
-
-
-
-
 
 export {};
