@@ -12,7 +12,6 @@ WA.onInit()
   .then(() => {
     console.log("Scripting API ready");
     console.log("Player tags: ", WA.player.tags);
-    WA.nav.openCoWebSite("/time2chill.html", true);
 
     const arrayClock = [
       ["13:16", 100, 100],
@@ -47,26 +46,12 @@ WA.onInit()
           // fonctions à rajouter lorsque monsieur ne veut pas travailler
 
           // Bouger en fonction d'un horraire
-          clokMov(arrayClock);
+          WA.nav.openCoWebSite("/time2chill.html", true);
 
           changeSleepMode();
         },
       }
     );
-    /*
-        let moveTimeout: NodeJS.Timeout | null = null;
-
-        WA.player.onPlayerMove(() => {
-            if (moveTimeout !== null) {
-                clearTimeout(moveTimeout);
-            }
-        
-            moveTimeout = setTimeout(() => {
-                sendPosition();
-            }, 500); // Attendre 500 ms après le dernier mouvement du joueur pour envoyer la position
-        });
-        
-*/
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
@@ -113,15 +98,5 @@ function clokMov(arrayClock: string | any[]) {
 
   refresh(arrayClock);
 }
-
-/*
-function sendPosition() {
-    WA.player.getPosition().then(position => {
-        var posX = position.x;
-        var posY = position.y;
-        window.parent.postMessage({ type: 'my_message', posX, posY }, '*');
-    });
-};
-*/
 
 export {};
