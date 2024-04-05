@@ -16,27 +16,42 @@ WA.onInit()
     console.log("Player tags: ", WA.player.tags);
 
     await WA.players.configureTracking({
-        players: true,
-        movement: false,
+      players: true,
+      movement: false,
     });
 
     WA.player.state.isSleepModeActive = false;
     console.log("Sleep mode: ", WA.player.state.isSleepModeActive);
 
     let currentSleepModeButton: Menu | undefined = undefined;
+    let automaticMovementButton: Menu | undefined = undefined;
     let coWebsite: CoWebsite | undefined = undefined;
+    let automaticMovementWebSite: Promise<CoWebsite> | undefined = undefined;
     const typingHandler = new TypingHandler(WA.player.name);
 
     const changeSleepMode = async () => {
-    console.log("Test button !");
-    WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
+      WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
+        if (automaticMovementButton) automaticMovementButton.remove();
         if (WA.player.state.isSleepModeActive) {
           coWebsite = await WA.nav.openCoWebSite("/src/pages/sleepMode.html");
+          automaticMovementButton = WA.ui.registerMenuCommand(
+            "Mouvement Automatique",
+            {
+              callback: () => {
+                automaticMovementWebSite = WA.nav.openCoWebSite(
+                  "/time2chill.html",
+                  true
+                );
+              },
+            }
+          );
         } else {
           if (coWebsite) coWebsite.close();
+          if (automaticMovementWebSite)
+            (await automaticMovementWebSite).close();
         }
         currentSleepModeButton = WA.ui.registerMenuCommand(
             getSleepModeMenuName(WA),
@@ -53,22 +68,22 @@ WA.onInit()
         getSleepModeMenuName(WA),
       {
         callback: () => {
-          // Fonctions à rajouter lorsque monsieur ne veut pas travailler
-          // Bouger en fonction d'un horraire
-          WA.nav.openCoWebSite("WA-map-starter-kit/time2chill.html", true);
           changeSleepMode();
         },
       }
     );
 
-    WA.chat.onChatMessage((message: string, event: any) => {
+    WA.chat.onChatMessage(
+      (message: string, event: any) => {
         console.log("The local user typed a message", message);
         if (event.author !== undefined) {
-            console.log("Message author: ", event.author.name);
-            let messageData = new Message(event.author.name, message);
-            typingHandler.respondToMessage(WA, messageData);
+          console.log("Message author: ", event.author.name);
+          let messageData = new Message(event.author.name, message);
+          typingHandler.respondToMessage(WA, messageData);
         }
-    }, { scope: "bubble" });
+      },
+      { scope: "bubble" }
+    );
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
