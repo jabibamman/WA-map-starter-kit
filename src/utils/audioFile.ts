@@ -27,7 +27,7 @@ export class AudioFile {
         }
         console.log('after'+this.isSleepModeActive);
         console.log('starting playing audio');
-        const directory = '/public/audio/';
+        const directory = `${import.meta.env.BASE_URL}audio/`;
         console.log('directory of file', directory);
         const fileName = `${directory}${playerName}.ogg`;
         console.log('file name', fileName);
