@@ -52,14 +52,14 @@ WA.onInit()
       movement: false,
     });
 
-      WA.chat.onChatMessage((message: string, event: any) => {
-          console.log("The local user typed a message", message);
-          if (event.author !== undefined) {
-              console.log("Message author: ", event.author.name);
-              let messageData = new Message(event.author.name, message);
-              typingHandler.respondToMessage(WA, messageData);
-          }
-      }, { scope: "bubble" });
+    WA.chat.onChatMessage((message: string, event: any) => {
+        console.log("The local user typed a message", message);
+        if (event.author !== undefined) {
+            console.log("Message author: ", event.author.name);
+            let messageData = new Message(event.author.name, message);
+            typingHandler.respondToMessage(WA, messageData);
+        }
+    }, { scope: "bubble" });
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
