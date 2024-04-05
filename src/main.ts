@@ -36,13 +36,13 @@ WA.onInit()
         currentSleepModeButton.remove();
         if (automaticMovementButton) automaticMovementButton.remove();
         if (WA.player.state.isSleepModeActive) {
-          coWebsite = await WA.nav.openCoWebSite("/sleepMode.html");
+          coWebsite = await WA.nav.openCoWebSite("../public/sleepMode.html");
           automaticMovementButton = WA.ui.registerMenuCommand(
             "Mouvement Automatique",
             {
               callback: () => {
                 automaticMovementWebSite = WA.nav.openCoWebSite(
-                  "/time2chill.html",
+                  "../public/time2chill.html",
                   true
                 );
               },
