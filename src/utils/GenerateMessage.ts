@@ -3,12 +3,17 @@ import {Message} from "./Message";
 import axios from 'axios'; 
 
 export class GenerateMessage {
+    private readonly descriptionOfUser: string;
     private openai: OpenAI | null = null;
-    private readonly descriptionOfUser: string
     private chatHistory: Message[];
 
-    constructor(descriptionOfUser: string) {
-        this.descriptionOfUser = descriptionOfUser;
+    constructor(playerName: string) {
+        this.descriptionOfUser = "Tu t'appelles " + playerName + ", tu es un développeur en télétravail. " +
+            "Un collègue discute avec toi. Montre lui que tu es en train de travailler et coupe court à la conversation pour gagner du temps. " +
+            "Aie un langage familier et décontracté, mais ne te répète pas. Fait des réponses très brèves tout en étant convaincant. " +
+            "Fait des fautes de frappes de temps en temps et utilises quand c'est nécessaire des abréviations comme \"tkt\" pour \"t'inquiète\" ou \"dsl\" pour \"désolé\". " +
+            "Dit des mots comme \"merde\" ou \"ptn\" quand tu es embêté et évite la ponctuation. " +
+            "Si jamais on te demande, pour l'instant tu n'es pas disponible pour un call\n";
         this.chatHistory = [];
         this.initializeOpenAI();
     }
@@ -70,7 +75,7 @@ export class GenerateMessage {
         if (this.chatHistory.length != 0) {
             prompt += "Voici l'historique de la discussion :\n"
             this.chatHistory.forEach(message => {
-                prompt += "- " + message.content + "\n";
+                prompt += message.content + "\n";
             });
         }
 
@@ -85,7 +90,7 @@ export class GenerateMessage {
         }
         prompt += "Fait une seule réponse pour les messages suivants :\n";
         newMessage.forEach(message => {
-            prompt += "- " + message.content + "\n";
+            prompt += message.content + "\n";
         });
 
         return prompt;
