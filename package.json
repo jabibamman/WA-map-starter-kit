@@ -20,7 +20,7 @@
   "dependencies": {
     "@workadventure/scripting-api-extra": "^1.4.8",
     "axios": "^1.6.8",
-    "openai": "^4.32.1", 
+    "openai": "^4.32.1",
     "play-sound": "^1.1.6"
   }
 }
