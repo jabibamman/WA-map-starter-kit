@@ -1,41 +1,141 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Ma page</title>
-</head>
-<body>
+  <head>
+    <title>Paln de mouvements</title>
+    <script src="https://play.workadventu.re/iframe_api.js"></script>
+    <link rel="stylesheet" href="time2chill.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f6f8fa;
+        color: #24292e;
+      }
+      .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1 {
+        border-bottom: 1px solid #eaecef;
+        padding-bottom: 10px;
+      }
+      form {
+        margin-top: 20px;
+      }
+      label,
+      input {
+        display: block;
+        margin-bottom: 10px;
+      }
+      button {
+        background-color: #0366d6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #005cc5;
+      }
+    </style>
+  </head>
+  <body>
+    <!----------------------------------------------- my html body ----------------------------------------------->
 
-    <h1>Choisissez une heure</h1>
-    <form>
-        <label id="currentPos"> Position: </label><br><br>
-        <label for="date">Heure : </label>
-        <input type="time" id="Heure" name="date">
-        <input type="submit" value="Envoyer">
-    </form>
-
+    <div class="container">
+      <h1>Choisissez une heure</h1>
+      <form id="form.id">
+        <label id="pos">position</label>
+        <input type="time" id="time" name="time" />
+        <button id="addButton">Ajouter</button>
+      </form>
+      <ul id="moveList"></ul>
+      <!----------------------------------------------- my html body ----------------------------------------------->
+    </div>
     <script>
-        window.addEventListener('message', function(event) {
-            var position = event.data.position;
-            console.log('Position reçue : ', position);
-        });
-    
-        document.addEventListener('click', function(event) {
-            var x = event.clientX;
-            var y = event.clientY;
-            console.log('Clic à la position (' + x + ', ' + y + ')');
-        });
-    
-        let positionList = [];
-        function makeList() {
-            for(var i = 0; i < 24; i++) {
-                positionList.push(i);
-                console.log(positionList);
-            }
-    
-            console.log(positionList);
+      var moves = [];
+      var lastPosition = null;
+
+      //////////////////////////////////////////////// EventListern ////////////////////////////////////////////////////
+      window.addEventListener("message", function (event) {
+        if (event.data.type === "hasPlayerMoved") {
+          var x = event.data.data.x;
+          var y = event.data.data.y;
+          lastPosition = { x: x, y: y };
         }
+      });
+
+      //////////////////////////////////////////////// ButtonAction ////////////////////////////////////////////////////
+      document
+        .getElementById("addButton")
+        .addEventListener("click", function (event) {
+          event.preventDefault();
+          console.log("le bouton a été cliqué");
+          if (!lastPosition) {
+            alert("Erreur : aucune position n'a été enregistrée.");
+            return;
+          }
+          var time = document.getElementById("time").value;
+          if (!time) {
+            alert("Erreur : aucune heure n'a été entrée.");
+            return;
+          }
+          for (var i = 0; i < moves.length; i++) {
+            if (
+              moves[i].position.x === lastPosition.x &&
+              moves[i].position.y === lastPosition.y &&
+              moves[i].time === time
+            ) {
+              alert("Erreur : cette position et heure sont déjà enregistrées.");
+              return;
+            }
+          }
+          moves.push({ position: lastPosition, time: time });
+          var label = document.getElementById("pos");
+          label.textContent = "position " + moves.length;
+          console.log(moves); // TODO: remove
+          clokMov(moves);
+
+          //////////////////////////////////////////////// addItemToList ////////////////////////////////////////////////////
+          var moveList = document.getElementById("moveList");
+          var listItem = document.createElement("li");
+          listItem.textContent =
+            "Position: " + JSON.stringify(lastPosition) + ", Time: " + time;
+          moveList.appendChild(listItem);
+        });
+
+      function movMap(x, y) {
+        WA.player.moveTo(x, y);
+      }
+
+      function refresh(moves) {
+        var t = 60000;
+        setTimeout(clokMov, t, moves);
+      }
+
+      //////////////////////////////////////////////// clockMovePlayer ////////////////////////////////////////////////////
+      function clokMov(moves) {
+        var todayClock = new Date();
+        var hours = todayClock.getHours();
+        var minutes = todayClock.getMinutes();
+        var timeClock =
+          (hours < 10 ? "0" + hours : hours) +
+          ":" +
+          (minutes < 10 ? "0" + minutes : minutes);
+        for (var i = 0; i < moves.length; i++) {
+          console.log("moves[i].time: " + moves[i].time);
+          console.log("timeClock avant if");
+          if (timeClock == moves[i].time) {
+            movMap(moves[i].position.x, moves[i].position.y);
+            console.log("timeClock dans if");
+          }
+          console.log("timeClock apres if");
+        }
+        refresh(moves);
+      }
     </script>
-    
-    </script>
-</body>
+  </body>
 </html>
