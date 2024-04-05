@@ -1,9 +1,9 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-import { Menu, Popup } from "@workadventure/iframe-api-typings";
+import { CoWebsite, Menu, Popup } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 import { TypingHandler } from "./utils/TypingHandler";
-import {Message} from "./utils/Message";
+import { Message } from "./utils/Message";
 
 console.log("Script started successfully");
 
@@ -18,15 +18,20 @@ WA.onInit()
     let sleepModeIsActive: boolean = false;
 
     let currentSleepModeButton: Menu | undefined = undefined;
+    let coWebsite: CoWebsite | undefined = undefined;
     const typingHandler = new TypingHandler();
 
-    const changeSleepMode = () => {
-      console.log("Test boutton !");
+    const changeSleepMode = async () => {
       sleepModeIsActive = !sleepModeIsActive;
       typingHandler.isSleepModeActive = sleepModeIsActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
+        if (sleepModeIsActive) {
+          coWebsite = await WA.nav.openCoWebSite("/src/pages/sleepMode.html");
+        } else {
+          if (coWebsite) coWebsite.close();
+        }
         currentSleepModeButton = WA.ui.registerMenuCommand(
           sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
           {
@@ -39,7 +44,7 @@ WA.onInit()
     };
 
     currentSleepModeButton = WA.ui.registerMenuCommand(
-      sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+      sleepModeIsActive ? "Se Réveiller !" : "C'est l'heure de dormir !",
       {
         callback: () => {
           changeSleepMode();
@@ -52,14 +57,17 @@ WA.onInit()
       movement: false,
     });
 
-      WA.chat.onChatMessage((message: string, event: any) => {
-          console.log("The local user typed a message", message);
-          if (event.author !== undefined) {
-              console.log("Message author: ", event.author.name);
-              let messageData = new Message(event.author.name, message);
-              typingHandler.respondToMessage(WA, messageData);
-          }
-      }, { scope: "bubble" });
+    WA.chat.onChatMessage(
+      (message: string, event: any) => {
+        console.log("The local user typed a message", message);
+        if (event.author !== undefined) {
+          console.log("Message author: ", event.author.name);
+          let messageData = new Message(event.author.name, message);
+          typingHandler.respondToMessage(WA, messageData);
+        }
+      },
+      { scope: "bubble" }
+    );
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
@@ -84,9 +92,5 @@ function closePopup() {
     currentPopup = undefined;
   }
 }
-
-
-
-
 
 export {};
