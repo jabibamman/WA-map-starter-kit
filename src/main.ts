@@ -39,7 +39,7 @@ WA.onInit()
           if (coWebsite) coWebsite.close();
         }
         currentSleepModeButton = WA.ui.registerMenuCommand(
-            WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+            getSleepModeMenuName(WA),
           {
             callback: () => {
               changeSleepMode();
@@ -50,13 +50,12 @@ WA.onInit()
     };
 
     currentSleepModeButton = WA.ui.registerMenuCommand(
-        WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
+        getSleepModeMenuName(WA),
       {
         callback: () => {
           // Fonctions à rajouter lorsque monsieur ne veut pas travailler
           // Bouger en fonction d'un horraire
           WA.nav.openCoWebSite("/time2chill.html", true);
-
           changeSleepMode();
         },
       }
@@ -96,6 +95,10 @@ function closePopup() {
     currentPopup.close();
     currentPopup = undefined;
   }
+}
+
+function getSleepModeMenuName(WA: any) {
+    return WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir";
 }
 
 export {};
