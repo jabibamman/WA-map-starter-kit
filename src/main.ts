@@ -63,8 +63,11 @@ WA.onInit()
 
     WA.room.area.onEnter("clock").subscribe(() => {
       const today = new Date();
-      const time = today.getHours() + ":" + today.getMinutes();
-      currentPopup = WA.ui.openPopup("clockPopup", "Ronan " + time, []);
+      // set hours/minutes with 0 if < 10
+      const hours = today.getHours().toString().padStart(2, "0");
+      const minutes = today.getMinutes().toString().padStart(2, "0");
+      const time = hours + ":" + minutes;
+      currentPopup = WA.ui.openPopup("clockPopup", time, []);
     });
 
     WA.room.area.onLeave("clock").subscribe(closePopup);
