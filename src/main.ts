@@ -1,9 +1,9 @@
 /// <reference types="@workadventure/iframe-api-typings" />
 
-import { Menu, Popup } from "@workadventure/iframe-api-typings";
+import { CoWebsite, Menu, Popup } from "@workadventure/iframe-api-typings";
 import { bootstrapExtra } from "@workadventure/scripting-api-extra";
 import { TypingHandler } from "./utils/TypingHandler";
-import {Message} from "./utils/Message";
+import { Message } from "./utils/Message";
 
 console.log("Script started successfully");
 
@@ -24,14 +24,20 @@ WA.onInit()
     console.log("Sleep mode: ", WA.player.state.isSleepModeActive);
 
     let currentSleepModeButton: Menu | undefined = undefined;
+    let coWebsite: CoWebsite | undefined = undefined;
     const typingHandler = new TypingHandler(WA.player.name);
 
-    const changeSleepMode = () => {
+    const changeSleepMode = async () => {
     console.log("Test button !");
     WA.player.state.isSleepModeActive = !WA.player.state.isSleepModeActive;
 
       if (currentSleepModeButton != undefined) {
         currentSleepModeButton.remove();
+        if (WA.player.state.isSleepModeActive) {
+          coWebsite = await WA.nav.openCoWebSite("/src/pages/sleepMode.html");
+        } else {
+          if (coWebsite) coWebsite.close();
+        }
         currentSleepModeButton = WA.ui.registerMenuCommand(
             WA.player.state.isSleepModeActive ? "Se Réveiller !" : "C'est l'heure de dormir ^^",
           {
